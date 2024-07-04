@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/env python3
 """
 Module implementing a type-annotated function returning a concatenated
 string from args
