@@ -1,5 +1,8 @@
 #!/usr/bin/env python3
-""" """
+"""
+Module implementing a coroutine that calls a function returning a
+asyncio.Task
+"""
 import asyncio
 from typing import List
 task_wait_random = __import__('3-tasks').task_wait_random
