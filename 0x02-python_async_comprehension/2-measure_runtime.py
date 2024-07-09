@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/env python3
 """Module that measures the total runtime of a coroutine"""
 import asyncio
 import time
