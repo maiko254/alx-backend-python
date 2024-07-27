@@ -5,6 +5,7 @@ import requests
 from parameterized import parameterized
 from utils import access_nested_map
 from utils import get_json
+from utils import memoize
 from unittest.mock import patch, Mock
 
 
@@ -45,3 +46,31 @@ class TestGetJson(unittest.TestCase):
         get_json(url)
         get_json_mock.assert_called_once_with(url)
         self.assertEqual(get_json(url), payload)
+
+
+class TestMemoize(unittest.TestCase):
+    """Class implementing parametrized testing for memoize method"""
+    class TestClass:
+
+        def a_method(self):
+            return 42
+
+        @memoize
+        def a_property(self):
+            return self.a_method()
+
+    @parameterized.expand([
+        (1, 42),
+        (2, 42)
+    ])
+    @patch.object(TestClass, 'a_method')
+    def test_memoize(self, call_count, expected, mock_method):
+        """Testcase for return value of memoize method and number of times
+        a_method in TestClass is called
+        """
+        mock_method.return_value = 42
+        test = self.TestClass()
+        for _ in range(call_count):
+            self.assertEqual(test.a_property, expected)
+        mock_method.assert_called_once()
+        self.assertEqual(mock_method.call_count, 1)
