@@ -52,7 +52,6 @@ class TestGithubOrgClient(unittest.TestCase):
                         "id": 1342004,
                     },
                     "html_url": "https://github.com/google/episodes.dart",
-                    "description": "A framework for timing performance of web apps.",
                     "fork": False,
                 },
                 {
