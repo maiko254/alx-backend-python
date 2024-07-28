@@ -40,19 +40,44 @@ class TestGithubOrgClient(unittest.TestCase):
             self.assertEqual(result,
                              f"https://api.github.com/orgs/{org_name}/repos")
 
-    @parameterized.expand([
-        ("https://api.github.com/orgs/google/repos", [{"name": "truth"}])
-    ])
     @patch('client.get_json')
-    def test_public_repos(self, url, public_repo, mock_get):
+    def test_public_repos(self, mock_get):
         """test case for return value of public_repos method/property"""
+        test_payload = {
+            "repos_url": "https://api.github.com/orgs/google/repos",
+            "repos": [
+                {
+                    "id": 7697149,
+                    "name": "episodes.dart",
+                    "owner": {
+                        "login": "google",
+                        "id": 1342004,
+                    },
+                    "html_url": "https://github.com/google/episodes.dart",
+                    "description": "A framework for timing performance of web apps.",
+                    "fork": False,
+                },
+                {
+                    "id": 7776515,
+                    "name": "cpp-netlib",
+                    "owner": {
+                        "login": "google",
+                        "id": 1342004,
+                    },
+                    "html_url": "https://github.com/google/cpp-netlib",
+                    "fork": True,
+                }
+            ]
+        }
+        mock_get.return_value = test_payload["repos"]
         with patch('client.GithubOrgClient._public_repos_url',
                    new_callable=PropertyMock) as mock_repos:
-            mock_repos.return_value = url
-            mock_get.return_value = public_repo
-            client = GithubOrgClient("google")
-            result = client.public_repos()
-            expected_result = ["truth"]
+            mock_repos.return_value = test_payload["repos_url"]
+            result = GithubOrgClient("google").public_repos()
+            expected_result = [
+                        "episodes.dart",
+                        "cpp-netlib"
+                    ]
             mock_repos.assert_called_once()
             mock_get.assert_called_once()
             self.assertEqual(result, expected_result)
