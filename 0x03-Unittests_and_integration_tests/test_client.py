@@ -2,7 +2,7 @@
 """ Test module for GithubOrgClient class """
 import unittest
 import client
-from unittest.mock import patch, Mock, PropertyMock
+from unittest.mock import patch, Mock, PropertyMock, MagicMock
 from parameterized import parameterized, parameterized_class
 from client import GithubOrgClient
 from fixtures import TEST_PAYLOAD
@@ -41,7 +41,7 @@ class TestGithubOrgClient(unittest.TestCase):
                              f"https://api.github.com/orgs/{org_name}/repos")
 
     @patch('client.get_json')
-    def test_public_repos(self, mock_get):
+    def test_public_repos(self, mock_get: MagicMock) -> None:
         """test case for return value of public_repos method/property"""
         test_payload = {
             "repos_url": "https://api.github.com/orgs/google/repos",
@@ -78,9 +78,9 @@ class TestGithubOrgClient(unittest.TestCase):
                         "episodes.dart",
                         "cpp-netlib"
                     ]
+            self.assertEqual(result, expected_result)
             mock_repos.assert_called_once()
             mock_get.assert_called_once()
-            self.assertEqual(result, expected_result)
 
     @parameterized.expand([
         ({"license": {"key": "apache-2.0"}}, "apache-2.0", True),
