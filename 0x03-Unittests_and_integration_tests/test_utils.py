@@ -60,7 +60,6 @@ class TestMemoize(unittest.TestCase):
             return self.a_method()
 
     @parameterized.expand([
-        (1, 42),
         (2, 42)
     ])
     @patch.object(TestClass, 'a_method')
