@@ -24,15 +24,33 @@ class TestGithubOrgClient(unittest.TestCase):
         get_json_mock.assert_called_once_with(url)
         self.assertEqual(result, expected_value)
 
-
     @parameterized.expand([
         ("google", {"repos_url": "https://api.github.com/orgs/google/repos"}),
-        ("clickdigital", {"repos_url": "https://api.github.com/orgs/clickdigital/repos"})
+        ("click", {"repos_url": "https://api.github.com/orgs/click/repos"})
         ])
     def test_public_repos_url(self, org_name, expected_value):
         """Tests return value of _public_repos_url method"""
-        with patch('client.GithubOrgClient.org', new_callable=PropertyMock) as mock_org:
+        with patch('client.GithubOrgClient.org',
+                   new_callable=PropertyMock) as mock_org:
             mock_org.return_value = expected_value
             client = GithubOrgClient(org_name)
             result = client._public_repos_url
-            self.assertEqual(result, f"https://api.github.com/orgs/{org_name}/repos")
+            self.assertEqual(result,
+                             f"https://api.github.com/orgs/{org_name}/repos")
+
+    @parameterized.expand([
+        ("https://api.github.com/orgs/google/repos", [{"name": "truth"}])
+    ])
+    @patch('client.get_json')
+    def test_public_repos(self, url, public_repo, mock_get):
+        """test case for return value of public_repos method/property"""
+        with patch('client.GithubOrgClient._public_repos_url',
+                   new_callable=PropertyMock) as mock_repos:
+            mock_repos.return_value = url
+            mock_get.return_value = public_repo
+            client = GithubOrgClient("google")
+            result = client.public_repos()
+            expected_result = ["truth"]
+            mock_repos.assert_called_once()
+            mock_get.assert_called_once()
+            self.assertEqual(result, expected_result)
