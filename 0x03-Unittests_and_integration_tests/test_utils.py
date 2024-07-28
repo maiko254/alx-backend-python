@@ -73,4 +73,3 @@ class TestMemoize(unittest.TestCase):
         for _ in range(call_count):
             self.assertEqual(test.a_property, expected)
         mock_method.assert_called_once()
-        self.assertEqual(mock_method.call_count, 1)
